@@ -1,9 +1,20 @@
 # Import necessary modules.
-import module
 from tkinter import *
 from tkinter.ttk import Notebook
 
-toDoList={}
+def addTask():
+    try:
+        file=open("list.txt", "x")
+    except:
+        file=open("list.txt", "a")
+    file.write(toDoEntry.get()+"&newTask;")
+    listCanvas.delete("all")
+    file=open("list.txt", "r")
+    for i in file.read().split("&newTask;"):
+        Checkbutton(listCanvas, text=i).pack()
+    file.close()
+
+toDoList=[]
 window=Tk()
 window.geometry("600x400")
 notebook=Notebook(window)
@@ -12,7 +23,7 @@ notebook=Notebook(window)
 toDo=Frame(window)
 toDoLabel=Label(toDo, text="To Do", font="Georgia 24 bold")
 toDoEntry=Entry(toDo)
-toDoButton=Button(toDo, text="Add Task", command=lambda: module.addTask(toDoEntry.get()) )
+toDoButton=Button(toDo, text="Add Task", command=addTask)
 listCanvasScrollbar=Scrollbar(toDo)
 listCanvas=Canvas(toDo, bg="white", height=200, width=450, yscrollcommand=listCanvasScrollbar.set)
 toDoLabel.grid(row=0, column=1, columnspan=3)
