@@ -67,7 +67,7 @@ listRefreshButton.grid(row=2, column=0, columnspan=2)
 refreshList()
 
 toDoCanvas.config(yscrollcommand=toDoCanvasScrollbar)
-toDoCanvas.bind("<Configure>", lambda event: toDoCanvas.configure(scrollregion=toDoCanvas.bbox("all")))
+toDoCanvasFrame.bind("<Configure>", lambda event: toDoCanvas.configure(scrollregion=toDoCanvas.bbox("all")))
 notebook.add(toDo, text="To Do")
 notebook.pack(expand=True, fill="both")
 
