@@ -1,8 +1,7 @@
 # Import necessary modules.
 from datetime import datetime
 import tkinter as tk
-import os
-import sys
+import platform
 from ttkbootstrap import Notebook, Meter, Separator, Button, Label, Entry, LabelFrame, Frame, Scrollbar, Checkbutton, OptionMenu, Toplevel, StringVar
 from ttkbootstrap.dialogs import Messagebox
 from matplotlib import pyplot as plt
@@ -228,7 +227,7 @@ def goalDialog():
     entryMath=Entry(goalWindow, width=10)
     entryMath.grid(row=0, column=1, padx=5, pady=5)
     checkSocialStudies=Checkbutton(goalWindow, text="Social Studies")
-    checkMath.state(["!alternate"])
+    checkSocialStudies.state(["!alternate"])
     checkSocialStudies.grid(row=1, column=0, padx=5, pady=5)
     entrySocialStudies=Entry(goalWindow, width=10)
     entrySocialStudies.grid(row=1, column=1, padx=5, pady=5)
@@ -293,6 +292,7 @@ dropdownOptions = ["Overall", "Overall"]
 for i in studyData[0]:
     dropdownOptions.append(i)
     subjects.append(i)
+    subjectOptions.append(i)
 try:
     file = open("week.txt", "r")
     if not datetime.now().strftime("%V") == file.read() and not file.read() == "":
@@ -316,6 +316,8 @@ for i in studyData:
         else:
             values[index] = values[index]+subject
 window = tk.Tk()
+if platform.system()=="darwin":
+    window.tk.call("tk", "scaling", 1.0)
 window.title("Study Planner")
 window.resizable(0, 0)
 window.protocol("WM_DELETE_WINDOW", windowClose)
