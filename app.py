@@ -92,6 +92,12 @@ def updateMeter(event=None):
 
 
 def updatePlots():
+    for i in studyData:
+        for index, subject in enumerate(i.values()):
+            if len(values) <= index:
+                values.append(subject)
+            else:
+                values[index] = values[index]+subject
     updateMeter()
     if max(values) == 0:
         ax.clear()
@@ -142,13 +148,6 @@ def log(mins):
         else:
             studyData[x][subjectVar.get()] = int(mins)
             logWindow.destroy()
-            values = []
-            for i in studyData:
-                for index, subject in enumerate(i.values()):
-                    if len(values) <= index:
-                        values.append(subject)
-                    else:
-                        values[index] = values[index]+subject
             updatePlots()
     except ValueError:
         Messagebox.show_error(message="Enter a number.")
@@ -176,32 +175,36 @@ def logDialog():
 
 def setGoals():
     if Messagebox.yesno(message="Are you sure you want to change your goals?"):
-        changedSubjects=[]
+        changedSubjects = []
         for i in goalWindow.winfo_children():
             if isinstance(i, Checkbutton):
                 if "selected" in i.state():
                     changedSubjects.append(i.cget("text"))
         global goals
-        goals=[]
+        goals = []
         for i in goalWindow.winfo_children():
             if isinstance(i, Entry):
-                if not i.get()=="":
+                if not i.get() == "":
                     try:
                         goals.append(int(i.get()))
                     except ValueError:
                         goals.append(30)
-        if len(goals)==len(changedSubjects):
+        if len(goals) == len(changedSubjects):
             for i in studyData:
                 for j in changedSubjects:
                     if j not in i:
-                        i[j]=0
+                        i[j] = 0
                 for j in list(i.keys()):
                     if j not in changedSubjects:
                         i.pop(j)
-            Messagebox.show_warning(message="The app will now close. Reopen for changes to take effect.")
+            Messagebox.show_warning(
+                message="The app will now close. Reopen for changes to take effect.")
             windowClose()
         else:
-            Messagebox.show_error(message="Enter a goal for each checked subject and try again.")
+            Messagebox.show_error(
+                message="Enter a goal for each checked subject and try again.")
+
+
 def goalDialog():
     global goalWindow
     global checkMath
@@ -221,40 +224,41 @@ def goalDialog():
     goalWindow.resizable(0, 0)
     goalWindow.columnconfigure(0, weight=1)
     goalWindow.columnconfigure(1, weight=1)
-    checkMath=Checkbutton(goalWindow, text="Math")
+    checkMath = Checkbutton(goalWindow, text="Math")
     checkMath.state(["!alternate"])
     checkMath.grid(row=0, column=0, padx=5, pady=5)
-    entryMath=Entry(goalWindow, width=10)
+    entryMath = Entry(goalWindow, width=10)
     entryMath.grid(row=0, column=1, padx=5, pady=5)
-    checkSocialStudies=Checkbutton(goalWindow, text="Social Studies")
+    checkSocialStudies = Checkbutton(goalWindow, text="Social Studies")
     checkSocialStudies.state(["!alternate"])
     checkSocialStudies.grid(row=1, column=0, padx=5, pady=5)
-    entrySocialStudies=Entry(goalWindow, width=10)
+    entrySocialStudies = Entry(goalWindow, width=10)
     entrySocialStudies.grid(row=1, column=1, padx=5, pady=5)
-    checkEnglish=Checkbutton(goalWindow, text="English")
+    checkEnglish = Checkbutton(goalWindow, text="English")
     checkEnglish.state(["!alternate"])
     checkEnglish.grid(row=2, column=0, padx=5, pady=5)
-    entryEnglish=Entry(goalWindow, width=10)
+    entryEnglish = Entry(goalWindow, width=10)
     entryEnglish.grid(row=2, column=1, padx=5, pady=5)
-    checkSpanish=Checkbutton(goalWindow, text="Spanish")
+    checkSpanish = Checkbutton(goalWindow, text="Spanish")
     checkSpanish.state(["!alternate"])
     checkSpanish.grid(row=3, column=0, padx=5, pady=5)
-    entrySpanish=Entry(goalWindow, width=10)
+    entrySpanish = Entry(goalWindow, width=10)
     entrySpanish.grid(row=3, column=1, padx=5, pady=5)
-    checkFrench=Checkbutton(goalWindow, text="French")
+    checkFrench = Checkbutton(goalWindow, text="French")
     checkFrench.state(["!alternate"])
     checkFrench.grid(row=4, column=0, padx=5, pady=5)
-    entryFrench=Entry(goalWindow, width=10)
+    entryFrench = Entry(goalWindow, width=10)
     entryFrench.grid(row=4, column=1, padx=5, pady=5)
-    checkScience=Checkbutton(goalWindow, text="Science")
+    checkScience = Checkbutton(goalWindow, text="Science")
     checkScience.state(["!alternate"])
     checkScience.grid(row=5, column=0, padx=5, pady=5)
-    entryScience=Entry(goalWindow, width=10)
+    entryScience = Entry(goalWindow, width=10)
     entryScience.grid(row=5, column=1, padx=5, pady=5)
-    goalLabel=Label(goalWindow, text="List of common subjects is U.S. based")
+    goalLabel = Label(goalWindow, text="List of common subjects is U.S. based")
     goalLabel.grid(row=6, column=0, columnspan=2, padx=5, pady=5)
-    goalButton=Button(goalWindow, text="Change", command=setGoals)
+    goalButton = Button(goalWindow, text="Change", command=setGoals)
     goalButton.grid(row=7, column=0, columnspan=2, padx=5, pady=5)
+
 
 try:
     file = open("list.txt", "r", encoding="utf-8")
@@ -287,7 +291,7 @@ except:
     for i in range(7):
         studyData.append({"Math": 0, "Social Studies": 0, "English": 0})
 subjects = []
-subjectOptions=["Select"]
+subjectOptions = ["Select"]
 dropdownOptions = ["Overall", "Overall"]
 for i in studyData[0]:
     dropdownOptions.append(i)
@@ -303,7 +307,7 @@ except OSError:
     pass
 try:
     file = open("goals.txt", "r")
-    goals = [int(i) for i in file.read().split(" ")]
+    goals = [int(i) for i in file.read().split(" ") if not i == ""]
 except:
     goals = []
     for i in enumerate(studyData[0]):
@@ -316,8 +320,12 @@ for i in studyData:
         else:
             values[index] = values[index]+subject
 window = tk.Tk()
-if platform.system()=="darwin":
-    window.tk.call("tk", "scaling", 1.0)
+size = (2, 2)
+if platform.system() == "Darwin":
+    Messagebox.show_warning(
+        "You appear to be using a Mac. The app interface may appear larger than intended. For the best experience, we recommend using Windows or Linux.")
+    window.geometry("500x400")
+    size = (1, 1)
 window.title("Study Planner")
 window.resizable(0, 0)
 window.protocol("WM_DELETE_WINDOW", windowClose)
@@ -360,7 +368,8 @@ progressFrame = LabelFrame(studyCanvasFrame, text="Progress")
 progressFrame.pack()
 selectionFrame = Frame(progressFrame)
 selectionFrame.pack(fill="x")
-dropdown = OptionMenu(selectionFrame, dropdownVar, *dropdownOptions, command=updateMeter)
+dropdown = OptionMenu(selectionFrame, dropdownVar, *
+                      dropdownOptions, command=updateMeter)
 dropdown.pack(side="right", padx=10, pady=10)
 dropdownLabel = Label(selectionFrame, text="Select a subject:")
 dropdownLabel.pack(side="right", padx=10, pady=10)
@@ -373,7 +382,7 @@ progressLabel = Label(
 progressLabel.pack(padx=20, pady=20)
 statsFrame = LabelFrame(studyCanvasFrame, text="Stats")
 statsFrame.pack()
-fig, ax = plt.subplots(figsize=(2, 2))
+fig, ax = plt.subplots(figsize=size)
 pie = FigureCanvasTkAgg(fig, master=statsFrame)
 pie.get_tk_widget().grid(row=0, column=0)
 ax.pie([1, 1, 1], autopct="%1.1f%%")
@@ -385,7 +394,7 @@ statsSeparator = Separator(statsFrame)
 statsSeparator.grid(row=1, column=0, columnspan=2, sticky="ew")
 xAxis = ["Su", "M", "T", "W", "Th", "F", "S"]
 yAxis = [0, 0, 0, 0, 0, 0, 0]
-fig2, ax2 = plt.subplots(figsize=(2, 2))
+fig2, ax2 = plt.subplots(figsize=size)
 week = FigureCanvasTkAgg(fig2, master=statsFrame)
 week.get_tk_widget().grid(row=2, column=0)
 ax2.bar(xAxis, yAxis)
@@ -397,7 +406,8 @@ optionsFrame = Frame(studyCanvasFrame)
 optionsFrame.pack()
 logButton = Button(optionsFrame, text="Log Activity", command=logDialog)
 logButton.pack(side="left", padx=5, pady=10)
-setButton = Button(optionsFrame, text="Change Weekly Goals", bootstyle="light", command=goalDialog)
+setButton = Button(optionsFrame, text="Change Weekly Goals",
+                   bootstyle="light", command=goalDialog)
 setButton.pack(padx=5, pady=10)
 
 refreshList()
